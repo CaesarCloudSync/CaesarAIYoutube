@@ -39,7 +39,7 @@ async def getaudio(url:str):
     audio = caesaryoutube.get_audio(url)
     if audio:
         title = caesaryoutube.clean_filename(audio.title)
-        headers = {'Content-Disposition': f'inline; filename="{title}.mp3"',"Content-length":str(audio.filesize)}
+        headers = {'Content-Disposition': f'inline; filename="{title}.mp3"'} # ,"Content-length":str(audio.filesize)
         return StreamingResponse(caesaryoutube.stream_media(audio.url),headers=headers,status_code=status.HTTP_200_OK,
                                 media_type="audio/mpeg") #Response(buffer.getvalue(), headers=headers, media_type='video/mp4')
     else:
@@ -50,7 +50,7 @@ async def getvideo(url:str):
     video = caesaryoutube.get_video(url)
     if video:
         title = caesaryoutube.clean_filename(video.title)
-        headers = {'Content-Disposition': f'inline; filename="{title}.mp4',"Content-length":str(video.filesize)}
+        headers = {'Content-Disposition': f'inline; filename="{title}.mp4'} #,"Content-length":str(video.filesize)
         return StreamingResponse(caesaryoutube.stream_media(video.url),headers=headers,status_code=status.HTTP_200_OK,
                                 media_type="video/mp4") #Response(buffer.getvalue(), headers=headers, media_type='video/mp4')
     else:
