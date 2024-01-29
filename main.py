@@ -57,6 +57,7 @@ async def getvideo(url:str):
 async def searchfeed(query:str,amount : Optional[int] = 10):
     try:
         result = caesaryoutube.searchfeed(query=query,amount=amount)
+        return result
     except Exception as ex:
         return {"error":f"{type(ex)}-{ex}"}
 
