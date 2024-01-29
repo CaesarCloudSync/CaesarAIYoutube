@@ -1,6 +1,6 @@
 import re
 from pytube import YouTube,request
-from youtubesearchpython import VideosSearch
+from youtubesearchpython import VideosSearch,PlaylistsSearch
 
 
 class CaesarAIYoutube:
@@ -9,6 +9,10 @@ class CaesarAIYoutube:
 
     def searchfeed(self,query:str,amount=10):
         videosSearch = VideosSearch(query, limit =amount)
+
+        return videosSearch.result()
+    def playlistsearchfeed(self,query:str,amount=10):
+        videosSearch = PlaylistsSearch(query, limit =amount)
 
         return videosSearch.result()
         
