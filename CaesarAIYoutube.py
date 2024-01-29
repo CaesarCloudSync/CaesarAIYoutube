@@ -1,9 +1,17 @@
-from pytube import YouTube,request
-import io
 import re
+from pytube import YouTube,request
+from youtubesearchpython import VideosSearch
+
+
 class CaesarAIYoutube:
     def __init__(self) -> None:
         pass
+
+    def searchfeed(self,query:str,amount=10):
+        videosSearch = VideosSearch(query, limit =amount)
+
+        return videosSearch.result()
+        
     def stream_media(self,mediaurl):
         for chunk in request.stream(mediaurl):
             yield chunk
@@ -23,3 +31,6 @@ class CaesarAIYoutube:
             return video
         else:
             return None
+cy = CaesarAIYoutube()
+#
+cy.searchfeed("2024 playboi carti")

@@ -7,13 +7,12 @@ import asyncio
 import uvicorn
 from fastapi import FastAPI, Header,Request,File, UploadFile,status,Form
 from fastapi.responses import StreamingResponse,FileResponse,Response
-from typing import Dict,List,Any,Union
-
+from typing import Dict,List,Any,Union,Optional
 from fastapi.responses import StreamingResponse
 from fastapi import WebSocket,WebSocketDisconnect
 from fastapi.middleware.cors import CORSMiddleware
 from CaesarAIYoutube import CaesarAIYoutube
-
+from bs4 import BeautifulSoup
 app = FastAPI()
 app.add_middleware(
     CORSMiddleware,
@@ -55,6 +54,13 @@ async def getvideo(url:str):
                                 media_type="video/mp4") #Response(buffer.getvalue(), headers=headers, media_type='video/mp4')
     else:
         return {"error":"no video version exists."}
+@app.get('/searchfeed')# GET # allow all origins all methods.
+async def getvideo(query:str,amount : Optional[int] = 10):
+    try:
+        result = caesaryoutube.searchfeed(query=query,amount=amount)
+    except Exception as ex:
+        return {"error":f"{type(ex)}-{ex}"}
+
 
 
 if __name__ == "__main__":
