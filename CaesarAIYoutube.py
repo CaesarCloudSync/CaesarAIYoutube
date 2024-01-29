@@ -1,6 +1,6 @@
 import re
 from pytube import YouTube,request
-from youtubesearchpython import VideosSearch,PlaylistsSearch
+from youtubesearchpython import VideosSearch,PlaylistsSearch,Playlist
 
 
 class CaesarAIYoutube:
@@ -35,6 +35,11 @@ class CaesarAIYoutube:
             return video
         else:
             return None
-cy = CaesarAIYoutube()
+    def get_playlist_videos(self,url):
+        playlist = Playlist(url)
+        return {"result":playlist.videos}
+#cy = CaesarAIYoutube()
 #
-cy.searchfeed("2024 playboi carti")
+#cy.searchfeed("2024 playboi carti")
+
+

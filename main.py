@@ -68,6 +68,14 @@ async def playlistsearchfeed(query:str,amount : Optional[int] = 10):
     except Exception as ex:
         return {"error":f"{type(ex)}-{ex}"}
 
+@app.get('/getplaylistvideos')# GET # allow all origins all methods.
+async def getplaylistvideos(url:str):
+    try:
+        result = caesaryoutube.get_playlist_videos(url)
+        return result
+    except Exception as ex:
+        return {"error":f"{type(ex)}-{ex}"}
+
 
 
 if __name__ == "__main__":
