@@ -55,7 +55,7 @@ async def getvideo(url:str):
     else:
         return {"error":"no video version exists."}
 @app.get('/searchfeed')# GET # allow all origins all methods.
-async def getvideo(query:str,amount : Optional[int] = 10):
+async def searchfeed(query:str,amount : Optional[int] = 10):
     try:
         result = caesaryoutube.searchfeed(query=query,amount=amount)
     except Exception as ex:
