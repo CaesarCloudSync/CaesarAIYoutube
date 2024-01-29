@@ -12,7 +12,6 @@ from fastapi.responses import StreamingResponse
 from fastapi import WebSocket,WebSocketDisconnect
 from fastapi.middleware.cors import CORSMiddleware
 from CaesarAIYoutube import CaesarAIYoutube
-from bs4 import BeautifulSoup
 app = FastAPI()
 app.add_middleware(
     CORSMiddleware,
