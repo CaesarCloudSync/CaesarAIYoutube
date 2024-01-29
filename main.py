@@ -12,6 +12,7 @@ from fastapi.responses import StreamingResponse
 from fastapi import WebSocket,WebSocketDisconnect
 from fastapi.middleware.cors import CORSMiddleware
 from CaesarAIYoutube import CaesarAIYoutube
+from pytube import YouTube,request,Playlist
 app = FastAPI()
 app.add_middleware(
     CORSMiddleware,
@@ -65,6 +66,18 @@ async def playlistsearchfeed(query:str,amount : Optional[int] = 10):
     try:
         result = caesaryoutube.playlistsearchfeed(query=query,amount=amount)
         return result
+    except Exception as ex:
+        return {"error":f"{type(ex)}-{ex}"}
+
+@app.get('/getplaylistvideo')# GET # allow all origins all methods.
+async def getplaylistvideo(url:str):
+    try:
+        playlist = Playlist(url)
+        #print(playlist)
+
+        headers = {'Content-Disposition': f'inline; filename="{playlist.title}.mp4'} #,"Content-length":str(video.filesize)
+        return StreamingResponse(caesaryoutube.steam_playlist_get_video(playlist=playlist),headers=headers,status_code=status.HTTP_200_OK,
+                                media_type="video/mp4") #Response(buffer.getvalue(), headers=headers, media_type='video/mp4')
     except Exception as ex:
         return {"error":f"{type(ex)}-{ex}"}
 
