@@ -37,9 +37,9 @@ async def getaudio(url:str):
     audio = caesaryoutube.get_audio(url)
     if audio:
         title = caesaryoutube.clean_filename(audio.title)
-        headers = {'Content-Disposition': f'inline; filename="{title}.mp3"'} # ,"Content-length":str(audio.filesize)
-        return StreamingResponse(caesaryoutube.stream_media(audio.url),headers=headers,status_code=status.HTTP_200_OK,
-                                media_type="audio/mpeg") #Response(buffer.getvalue(), headers=headers, media_type='video/mp4')
+        return {"title":title,"audio":audio.url}
+        
+
     else:
         return {"error":"no audio version exists"}
 
@@ -48,9 +48,8 @@ async def getvideo(url:str):
     video = caesaryoutube.get_video(url)
     if video:
         title = caesaryoutube.clean_filename(video.title)
-        headers = {'Content-Disposition': f'inline; filename="{title}.mp4'} #,"Content-length":str(video.filesize)
-        return StreamingResponse(caesaryoutube.stream_media(video.url),headers=headers,status_code=status.HTTP_200_OK,
-                                media_type="video/mp4") #Response(buffer.getvalue(), headers=headers, media_type='video/mp4')
+        return {"title":title,"video":video.url}
+
     else:
         return {"error":"no video version exists."}
 @app.get('/searchfeed')# GET # allow all origins all methods.
