@@ -68,7 +68,6 @@ class CaesarAIYoutube:
         #print(buckets = list(storage_client.list_buckets())
         bucket = self.storage_client.get_bucket(bucket_name)
         blob = bucket.blob(blob_name)
-        blob.create_resumable_upload_session()
         blob.upload_from_file(file_bytes) #upload_from_filename(path_to_file)
         
         #returns a public url
