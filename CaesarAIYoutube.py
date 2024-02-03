@@ -68,22 +68,30 @@ class CaesarAIYoutube:
         #print(buckets = list(storage_client.list_buckets())
         bucket = self.storage_client.get_bucket(bucket_name)
         blob = bucket.blob(blob_name)
-     
+        blob.create_resumable_upload_session()
         blob.upload_from_file(file_bytes) #upload_from_filename(path_to_file)
         
         #returns a public url
         self.make_blob_public(blob_name,bucket_name)
         return blob.public_url
+    def get_all_media(self,bucket_name:str="caesaraiyoutube-bucket"):
+        bucket =self.storage_client.get_bucket(bucket_name)
+        blobs = bucket.list_blobs()
+        return [{"title":blob.name,"url":blob.media_link}for blob in blobs]
+
+
     def delete_all_media(self,bucket_name:str="caesaraiyoutube-bucket"):
         bucket =self.storage_client.get_bucket(bucket_name)
         blobs = bucket.list_blobs()
+    
         for blob in blobs:
             print(blob)
             blob.delete()
 
 
 if __name__ == "__main__":
-    pass
+    cy = CaesarAIYoutube()
+    print(cy.get_all_media())
     #caesaryoutube = CaesarAIYoutube()
     
 
