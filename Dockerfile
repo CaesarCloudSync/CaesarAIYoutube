@@ -5,6 +5,7 @@ RUN apt-get update && apt-get install curl ffmpeg libsm6 libxext6 uvicorn libope
 RUN pip install uvicorn
 RUN pip install pytube
 RUN pip install youtube-search-python
+RUN pip install google-cloud-storage
 # Set the working directory to /code
 WORKDIR /code
 #VOLUME /home/amari/Desktop/MaturityAI/MaturityFastAPI /code

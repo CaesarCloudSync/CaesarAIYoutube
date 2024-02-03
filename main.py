@@ -34,10 +34,15 @@ async def index():
     return "Welcome to CaesarAIWorld!"
 @app.get('/getaudio')# GET # allow all origins all methods.
 async def getaudio(url:str):
+    audio_stream = io.BytesIO()
     audio = caesaryoutube.get_audio(url)
     if audio:
         title = caesaryoutube.clean_filename(audio.title)
-        return {"title":title,"audio":audio.url}
+        audio_filename = f"{title}.mp3"
+        audio.stream_to_buffer(audio_stream)
+        audio_stream.seek(0)
+        public_url = caesaryoutube.upload_to_bucket(audio_stream,audio_filename)
+        return {"title":audio_filename,"video":public_url}
         
 
     else:
@@ -45,10 +50,15 @@ async def getaudio(url:str):
 
 @app.get('/getvideo')# GET # allow all origins all methods.
 async def getvideo(url:str):
+    video_stream = io.BytesIO()
     video = caesaryoutube.get_video(url)
     if video:
         title = caesaryoutube.clean_filename(video.title)
-        return {"title":title,"video":video.url}
+        video_filename = f"{title}.mp4"
+        video.stream_to_buffer(video_stream)
+        video_stream.seek(0)
+        public_url = caesaryoutube.upload_to_bucket(video_stream,video_filename)
+        return {"title":video_filename,"video":public_url}
 
     else:
         return {"error":"no video version exists."}
@@ -75,6 +85,10 @@ async def getplaylistvideos(url:str):
     except Exception as ex:
         return {"error":f"{type(ex)}-{ex}"}
 
+@app.post("/deleteallmedia")
+def deleteallmedia(data: JSONStructure = None):
+    caesaryoutube.delete_all_media()
+    return {"message":"all media was deleted."}
 
 
 if __name__ == "__main__":
