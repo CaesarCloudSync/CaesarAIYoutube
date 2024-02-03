@@ -42,7 +42,7 @@ async def getaudio(url:str):
         audio.stream_to_buffer(audio_stream)
         audio_stream.seek(0)
         public_url = caesaryoutube.upload_to_bucket(audio_stream,audio_filename)
-        return {"title":audio_filename,"video":public_url}
+        return {"title":audio_filename,"media":public_url}
         
 
     else:
@@ -58,7 +58,7 @@ async def getvideo(url:str):
         video.stream_to_buffer(video_stream)
         video_stream.seek(0)
         public_url = caesaryoutube.upload_to_bucket(video_stream,video_filename)
-        return {"title":video_filename,"video":public_url}
+        return {"title":video_filename,"media":public_url}
 
     else:
         return {"error":"no video version exists."}
