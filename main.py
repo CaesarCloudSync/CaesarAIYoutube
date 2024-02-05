@@ -35,10 +35,9 @@ table = "caesaraiworldmodels"
 @app.get('/')# GET # allow all origins all methods.
 async def index():
     return "Welcome to CaesarAIWorld!"
-@app.get('/getaudio')# GET # allow all origins all methods.
-async def getaudio(url:str):
+@app.get('/getaudiodownload')# GET # allow all origins all methods.
+async def getaudiodownload(url:str):
     audio = caesaryoutube.get_audio(url)
-    
     if audio:
         title = caesaryoutube.clean_filename(audio.title)
         video_filename = f"{title}.mp3"
@@ -54,8 +53,32 @@ async def getaudio(url:str):
     else:
         return {"error":"no video version exists."}
 
-@app.get('/getvideo')# GET # allow all origins all methods.
-async def getvideo(url:str):
+@app.get('/getaudiowatch')# GET # allow all origins all methods.
+async def getaudiowatch(url:str):
+    audio = caesaryoutube.get_audio(url)
+    if audio:
+        title = caesaryoutube.clean_filename(audio.title)
+        video_filename = f"{title}.mp3"
+        return {"title":video_filename,"media":audio.url}
+
+    else:
+        return {"error":"no video version exists."}
+
+@app.get('/getvideowatch')# GET # allow all origins all methods.
+async def getvideowatch(url:str):
+    
+    video = caesaryoutube.get_video(url)
+    
+    if video:
+        title = caesaryoutube.clean_filename(video.title)
+        video_filename = f"{title}.mp4"
+        return {"title":video_filename,"media":video.url}
+
+    else:
+        return {"error":"no video version exists."}
+    
+@app.get('/getvideodownload')# GET # allow all origins all methods.
+async def getvideodownload(url:str):
     
     video = caesaryoutube.get_video(url)
     
