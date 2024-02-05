@@ -12,6 +12,8 @@ from fastapi.responses import StreamingResponse
 from fastapi import WebSocket,WebSocketDisconnect
 from fastapi.middleware.cors import CORSMiddleware
 from CaesarAIYoutube import CaesarAIYoutube
+from CaesarAIGCP.CaesarAIGCP import CaesarAIGCP
+from google.cloud import storage
 app = FastAPI()
 app.add_middleware(
     CORSMiddleware,
@@ -21,7 +23,8 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-
+caesaraigcp = CaesarAIGCP()
+bucket_name = "caesaraiyoutube-bucket"
 caesaryoutube = CaesarAIYoutube()
 JSONObject = Dict[Any, Any]
 JSONArray = List[Any]
@@ -34,31 +37,39 @@ async def index():
     return "Welcome to CaesarAIWorld!"
 @app.get('/getaudio')# GET # allow all origins all methods.
 async def getaudio(url:str):
-    audio_stream = io.BytesIO()
     audio = caesaryoutube.get_audio(url)
+    
     if audio:
         title = caesaryoutube.clean_filename(audio.title)
-        audio_filename = f"{title}.mp3"
-        audio.stream_to_buffer(audio_stream)
-        audio_stream.seek(0)
-        public_url = caesaryoutube.upload_to_bucket(audio_stream,audio_filename)
-        return {"title":audio_filename,"media":public_url}
-        
+        video_filename = f"{title}.mp3"
+        bucket_exists = caesaraigcp.blob_exists(bucket_name,video_filename)
+        if not bucket_exists:
+            
+            filesize = audio.filesize
+            return StreamingResponse(caesaryoutube.stream_to_bucket(audio.url,filesize,video_filename),status_code=status.HTTP_200_OK,
+                                    media_type='text/event-stream') #Response(buffer.getvalue(), headers=headers, media_type='video/mp4')
+        else:
+            return f"https://storage.googleapis.com/{bucket_name}/{video_filename}"
 
     else:
-        return {"error":"no audio version exists"}
+        return {"error":"no video version exists."}
 
 @app.get('/getvideo')# GET # allow all origins all methods.
 async def getvideo(url:str):
-    video_stream = io.BytesIO()
+    
     video = caesaryoutube.get_video(url)
+    
     if video:
         title = caesaryoutube.clean_filename(video.title)
         video_filename = f"{title}.mp4"
-        video.stream_to_buffer(video_stream)
-        video_stream.seek(0)
-        public_url = caesaryoutube.upload_to_bucket(video_stream,video_filename)
-        return {"title":video_filename,"media":public_url}
+        bucket_exists = caesaraigcp.blob_exists(bucket_name,video_filename)
+        if not bucket_exists:
+            
+            filesize = video.filesize
+            return StreamingResponse(caesaryoutube.stream_to_bucket(video.url,filesize,video_filename),status_code=status.HTTP_200_OK,
+                                    media_type='text/event-stream') #Response(buffer.getvalue(), headers=headers, media_type='video/mp4')
+        else:
+            return f"https://storage.googleapis.com/{bucket_name}/{video_filename}"
 
     else:
         return {"error":"no video version exists."}
@@ -92,8 +103,9 @@ async def getplaylistvideos(url:str):
 
 @app.post("/deleteallmedia")
 def deleteallmedia(data: JSONStructure = None):
-    caesaryoutube.delete_all_media()
-    return {"message":"all media was deleted."}
+    return StreamingResponse(caesaraigcp.delete_all_media(),status_code=status.HTTP_200_OK,
+                        media_type='text/event-stream') #Response(buffer.getvalue(), headers=headers, media_type='video/mp4')
+
 
 
 if __name__ == "__main__":

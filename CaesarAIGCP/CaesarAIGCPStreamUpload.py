@@ -1,6 +1,6 @@
 from google.auth.transport.requests import AuthorizedSession
 from google.resumable_media import requests, common
-from CaesarAIGCP import CaesarAIGCP
+from CaesarAIGCP.CaesarAIGCP import CaesarAIGCP
 class CaesarAIGCPStreamUpload(CaesarAIGCP):
     def __init__(
             self, 

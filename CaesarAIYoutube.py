@@ -1,9 +1,8 @@
 import re
 import sys
-from CaesarAIGCP.CaesarAIGCP import CaesarAIGCPStreamUpload
+from CaesarAIGCP.CaesarAIGCPStreamUpload import CaesarAIGCPStreamUpload
 from pytube import YouTube,request
 from youtubesearchpython import VideosSearch,PlaylistsSearch,Playlist
-
 
 class CaesarAIYoutube:
     def __init__(self) -> None:
@@ -40,13 +39,17 @@ class CaesarAIYoutube:
     def get_playlist_videos(self,url):
         playlist = Playlist(url)
         return {"result":playlist.videos}
-    def stream_to_bucket(self,mediaurl:str,filesize:str,bucket_name:str,blob_name:str):
-        with CaesarAIGCPStreamUpload(bucket_name=bucket_name, blob_name=blob_name) as s:
+    def stream_to_bucket(self,mediaurl:str,filesize:str,blob_name:str,bucket_name:str="caesaraiyoutube-bucket"):
+        with CaesarAIGCPStreamUpload(bucket_name=bucket_name, blob_name=blob_name)as gcp_upload_stream:
             for ind,chunk in enumerate(request.stream(mediaurl)):
-    
-                s.write(chunk)
-                yield f"{(ind * sys.getsizeof(chunk)/filesize) * 100}%"
-                
+                gcp_upload_stream.write(chunk)
+                progress = ((ind * sys.getsizeof(chunk)/filesize) * 100)
+                yield f"{progress:.2f}%\n"
+        bucket = gcp_upload_stream._client.bucket(bucket_name)
+        blob = bucket.blob(blob_name)
+
+        blob.make_public()
+        yield f"https://storage.googleapis.com/{bucket_name}/{blob_name}"                
 
 
 if __name__ == "__main__":

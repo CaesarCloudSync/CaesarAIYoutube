@@ -2,7 +2,6 @@ import os
 import json
 import base64
 from google.cloud import storage
-from CaesarAIGCPStreamUpload import CaesarAIGCPStreamUpload
 class CaesarAIGCP:
     def __init__(self) -> None:
         dir_path = os.path.dirname(os.path.realpath(__file__))
@@ -23,7 +22,10 @@ class CaesarAIGCP:
         #print(
         #    f"Blob {blob.name} is publicly accessible at {blob.public_url}"
         #)
-
+    def blob_exists(self,bucket_name, filename):
+        bucket = self._client.get_bucket(bucket_name)
+        blob = bucket.blob(filename)
+        return blob.exists()
     def upload_to_bucket(self,  file_bytes,blob_name:str,bucket_name:str="caesaraiyoutube-bucket"):
         """ Upload data to a bucket"""
         
@@ -48,10 +50,11 @@ class CaesarAIGCP:
     def delete_all_media(self,bucket_name:str="caesaraiyoutube-bucket"):
         bucket =self._client.get_bucket(bucket_name)
         blobs = bucket.list_blobs()
-    
-        for blob in blobs:
-            print(blob)
+   
+        for ind,blob in enumerate(blobs):
+            #print(blob)
             blob.delete()
+            yield f"{ind}:{blob.name}\n"
 
 
 
