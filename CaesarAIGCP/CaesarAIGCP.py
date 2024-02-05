@@ -55,6 +55,9 @@ class CaesarAIGCP:
             #print(blob)
             blob.delete()
             yield f"{ind}:{blob.name}\n"
-
+    def delete_blob(self,blob_name:str,bucket_name:str="caesaraiyoutube-bucket"):
+        bucket =self._client.get_bucket(bucket_name)
+        blob = bucket.blob(blob_name)
+        blob.delete()
 
 

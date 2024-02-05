@@ -100,6 +100,10 @@ async def getplaylistvideos(url:str):
         return result
     except Exception as ex:
         return {"error":f"{type(ex)}-{ex}"}
+@app.delete("/deletemedia")
+def deletemedia(blob_name:str,bucket_name : Optional[str] = "caesaraiyoutube-bucket"):
+    caesaraigcp.delete_blob(blob_name,bucket_name)
+    return {"message":"media deleted."}
 
 @app.post("/deleteallmedia")
 def deleteallmedia(data: JSONStructure = None):
