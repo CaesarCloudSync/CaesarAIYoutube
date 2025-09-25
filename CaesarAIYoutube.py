@@ -8,7 +8,10 @@ class CaesarAIYoutube:
     def __init__(self) -> None:
         pass
     def searchfeed(self,query:str,amount=10):
+        print("hi")
         videosSearch = VideosSearch(query, limit =amount)
+        print("hello")
+
 
         return videosSearch.result()
     def playlistsearchfeed(self,query:str,amount=10):
