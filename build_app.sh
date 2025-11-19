@@ -1,41 +1,42 @@
 #!/bin/bash
 image="caesaraiyoutube"
 
-function getVersions() {
-    IN=$(cat main.tf | grep palondomus/$image)
-    arrIN=(${IN//:/ })
-    oldv=$((${arrIN[3]::-1}))
-    newv=$(($oldv+1))
-    echo $oldv $newv
-}
-
-
+newv=$(head -c 32 /dev/urandom | sha256sum | cut -d' ' -f1)
 
 # Auth GCP Cloud
 gcloud auth application-default login
 
-# Change Docker tag in .tf
-read -r oldv newv  <<< $(getVersions)
-sed -i -e "s/$image:$oldv/$image:$newv/" main.tf
 
-
+export FULL_IMAGE=palondomus/$image:$newv
+export IMAGE=$image
+export NEWV=$newv
 
 # Push Docker
-docker build -t palondomus/$image:$newv .
+docker compose build
 docker push palondomus/$image:$newv
 
+
+export TF_VAR_image="palondomus/$image:$newv"
+cd deployment
 # Terraform Push Google Cloud
 terraform init
 terraform plan 
 terraform apply -auto-approve
-
+cd ..
 # Push Github
 git add .
 git commit -m "$1"
 git push origin -u main:main
 
-# Test application
-docker run -it -p 8080:8080 palondomus/$image:$newv
+docker compose up
+
+
+
+
+
+
+
+
 
 
 
