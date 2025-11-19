@@ -21,6 +21,7 @@ resource "google_cloud_run_service" "app" {
     latest_revision = true
   }
 }
+}
 
 # -----------------------------------
 # Allow public access (optional)
