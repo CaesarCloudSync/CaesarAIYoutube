@@ -19,7 +19,6 @@ provider "google" {
 module "service_accounts" {
   source          = "./modules/service_accounts"
   project_id      = var.project_id
-  key_file_path   =  var.key_file_path
 }
 
 
